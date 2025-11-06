@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>柏客健防伪验证系统 - 浙江柏客健实业有限公司</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a5f7a 0%, #2d8c6e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .company-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8f4f1;
+            position: relative;
+        }
+
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a5f7a, #2d8c6e);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(26, 95, 122, 0.3);
+        }
+
+        .company-name {
+            color: #1a5f7a;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .company-subtitle {
+            color: #2d8c6e;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .company-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .info-item i {
+            color: #2d8c6e;
+            font-size: 14px;
+        }
+
+        .verification-section {
+            margin: 30px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #1a5f7a;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #1a5f7a, #2d8c6e);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #1a5f7a;
+            box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1);
+            background: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1a5f7a;
+            font-size: 18px;
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a5f7a 0%, #2d8c6e 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .verify-btn:hover::before {
+            left: 100%;
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(26, 95, 122, 0.3);
+        }
+
+        .verify-btn:active {
+            transform: translateY(0);
+        }
+
+        .verify-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .verify-btn:disabled:hover::before {
+            left: -100%;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a5f7a;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .loading p {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .result.valid {
+            background: linear-gradient(135deg, #d4f4dd 0%, #e8f6f3 100%);
+            border-color: #2d8c6e;
+            color: #155724;
+        }
+
+        .result.invalid {
+            background: linear-gradient(135deg, #fde8e8 0%, #fdf2f2 100%);
+            border-color: #e53e3e;
+            color: #721c24;
+        }
+
+        .result.error {
+            background: linear-gradient(135deg, #fef5e7 0%, #fef9f3 100%);
+            border-color: #dd6b20;
+            color: #744210;
+        }
+
+        .result.warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff9e6 100%);
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .result-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .result h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .result p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: inherit;
+        }
+
+        .result-code {
+            background: rgba(255,255,255,0.5);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .query-info {
+            background: rgba(0,0,0,0.05);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e8f4f1;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .security-tips {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #1a5f7a;
+        }
+
+        .security-tips h4 {
+            color: #1a5f7a;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .security-tips ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .security-tips li {
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #666;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .security-tips li::before {
+            content: '•';
+            color: #2d8c6e;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .company-name {
+                font-size: 20px;
+            }
+
+            .company-subtitle {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .input-wrapper input {
+                padding: 14px 45px 14px 15px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .company-info {
+                font-size: 11px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                gap: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 企业头部信息 -->
+        <div class="company-header">
+            <div class="company-logo">柏</div>
+            <div class="company-name">浙江柏客健实业有限公司</div>
+            <div class="company-subtitle">BAI KE JIAN ENTERPRISE CO., LTD.</div>
+
+            <div class="company-info">
+                <div class="info-item">
+                    <i>📍</i>
+                    <span>浙江省杭州市临安区青山湖街道市地街33号1幢</span>
+                </div>
+                <div class="info-item">
+                    <i>📞</i>
+                    <span>联系电话：0571-86693666</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 验证区域 -->
+        <div class="verification-section">
+            <div class="section-title">防伪码验证</div>
+
+            <div class="input-group">
+                <label for="security-code">请输入15位防伪码：</label>
+                <div class="input-wrapper">
+                    <input
+                        type="text"
+                        id="security-code"
+                        placeholder="输入防伪码进行验证"
+                        maxlength="15"
+                        autocomplete="off"
+                    >
+                    <div class="input-icon">🔒</div>
+                </div>
+            </div>
+
+            <button class="verify-btn" onclick="verifyCode()">
+                <span>立即验证</span>
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>正在验证防伪码...</p>
+            </div>
+
+            <div class="result" id="result">
+                <!-- 验证结果将动态显示在这里 -->
+            </div>
+        </div>
+
+        <!-- 安全提示 -->
+        <div class="security-tips">
+            <h4>安全提示</h4>
+            <ul>
+                <li>请通过官方渠道购买柏客健产品</li>
+                <li>每个防伪码只能验证一次，谨防假冒</li>
+                <li>系统会自动记录已验证的防伪码</li>
+                <li>如有疑问，请拨打官方电话核实</li>
+            </ul>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>© 2024 浙江柏客健实业有限公司 版权所有</p>
+            <p>防伪验证系统 v2.0 | 高级安全防护</p>
+        </div>
+    </div>
+
+    <script>
+        // 防伪码数据库和已验证记录
+        let securityCodes = new Set();
+        let verifiedCodes = new Map(); // 存储已验证的防伪码及其验证时间
+        let codeMetadata = {};
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSecurityCodes();
+            loadVerifiedCodes(); // 加载已验证记录
+
+            // 输入框事件监听
+            const input = document.getElementById('security-code');
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.toUpperCase();
+                value = value.replace(/[^A-Z0-9]/g, '');
+                e.target.value = value;
+
+                // 实时检查是否已验证过
+                checkIfAlreadyVerified(value);
+            });
+
+            // 回车键验证
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyCode();
+                }
+            });
+
+            // 输入框自动聚焦
+            input.focus();
+        });
+
+        // 加载防伪码数据
+        async function loadSecurityCodes() {
+            try {
+                const response = await fetch('防伪码.json');
+                if (!response.ok) {
+                    throw new Error('无法加载防伪码数据库');
+                }
+
+                const data = await response.json();
+                codeMetadata = data.metadata;
+
+                data.codes.forEach(code => {
+                    securityCodes.add(code);
+                });
+
+                console.log(`成功加载 ${securityCodes.size} 个防伪码`);
+
+            } catch (error) {
+                console.error('加载防伪码数据失败:', error);
+                showResult('error',
+                    '⚠️ 系统提示',
+                    '防伪码数据库加载失败，请确保数据文件存在。如需帮助，请联系：<strong>0571-86693666</strong>'
+                );
+            }
+        }
+
+        // 加载已验证的防伪码记录
+        function loadVerifiedCodes() {
+            try {
+                const stored = localStorage.getItem('bkj_verified_codes');
+                if (stored) {
+                    const data = JSON.parse(stored);
+                    verifiedCodes = new Map(data);
+                    console.log(`加载了 ${verifiedCodes.size} 条已验证记录`);
+                }
+            } catch (error) {
+                console.error('加载已验证记录失败:', error);
+                verifiedCodes = new Map();
+            }
+        }
+
+        // 保存已验证的防伪码记录
+        function saveVerifiedCodes() {
+            try {
+                const data = Array.from(verifiedCodes.entries());
+                localStorage.setItem('bkj_verified_codes', JSON.stringify(data));
+            } catch (error) {
+                console.error('保存已验证记录失败:', error);
+            }
+        }
+
+        // 检查是否已验证过
+        function checkIfAlreadyVerified(code) {
+            if (code.length === 15 && verifiedCodes.has(code)) {
+                const verifyTime = verifiedCodes.get(code);
+                const verifyDate = new Date(verifyTime).toLocaleString('zh-CN');
+
+                showResult('warning',
+                    '🔍 已验证记录',
+                    `<div class="result-icon">⏰</div>
+                     <h3>该防伪码已被验证</h3>
+                     <p>防伪码 <span class="result-code">${code}</span> 已在以下时间验证过：</p>
+                     <div class="query-info">首次验证时间：${verifyDate}</div>
+                     <p>每个防伪码只能验证一次，重复验证可能意味着假冒风险。</p>
+                     <p>如需帮助，请联系：<strong>0571-86693666</strong></p>`
+                );
+                return true;
+            }
+            return false;
+        }
+
+        // 验证防伪码
+        function verifyCode() {
+            const codeInput = document.getElementById('security-code');
+            const code = codeInput.value.trim().toUpperCase();
+
+            // 检查是否已验证过
+            if (checkIfAlreadyVerified(code)) {
+                return;
+            }
+
+            // 显示加载动画
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            loading.style.display = 'block';
+            result.style.display = 'none';
+
+            // 模拟网络延迟
+            setTimeout(() => {
+                performVerification(code);
+                loading.style.display = 'none';
+            }, 800);
+        }
+
+        // 执行验证逻辑
+        function performVerification(code) {
+            const result = document.getElementById('result');
+
+            // 验证输入
+            if (!code) {
+                showResult('error',
+                    '🔍 输入提示',
+                    '请输入15位防伪码进行验证'
+                );
+                return;
+            }
+
+            if (code.length !== 15) {
+                showResult('error',
+                    '📝 格式错误',
+                    '防伪码必须是15位字符，请检查后重新输入'
+                );
+                return;
+            }
+
+            if (!/^[A-Z0-9]{15}$/.test(code)) {
+                showResult('error',
+                    '❓ 格式错误',
+                    '防伪码只能包含数字和大写字母，请检查输入'
+                );
+                return;
+            }
+
+            // 检查防伪码是否存在
+            if (securityCodes.has(code)) {
+                // 记录验证时间
+                const verifyTime = new Date().toISOString();
+                verifiedCodes.set(code, verifyTime);
+                saveVerifiedCodes();
+
+                showResult(
+                    'valid',
+                    '✅ 验证成功',
+                    `<div class="result-icon">🎉</div>
+                     <h3>正品确认！</h3>
+                     <p>您查询的防伪码</p>
+                     <div class="result-code">${code}</div>
+                     <p>是<strong>浙江柏客健实业有限公司</strong>的正品！</p>
+                     <div class="query-info">验证时间：${new Date().toLocaleString('zh-CN')}</div>
+                     <p>感谢您选择我们的产品，请放心使用。</p>
+                     <p><small>⚠️ 该防伪码已被记录，无法再次验证</small></p>`
+                );
+
+                celebrate();
+
+                // 禁用输入框防止重复验证
+                setTimeout(() => {
+                    document.getElementById('security-code').value = '';
+                }, 2000);
+
+            } else {
+                showResult(
+                    'invalid',
+                    '❌ 验证失败',
+                    `<div class="result-icon">⚠️</div>
+                     <h3>防伪码无效</h3>
+                     <p>您查询的防伪码</p>
+                     <div class="result-code">${code}</div>
+                     <p>在系统中不存在！</p>
+                     <p>请确认输入是否正确，或拨打<strong>0571-86693666</strong>咨询。</p>`
+                );
+
+                // 错误提示动画
+                const input = document.getElementById('security-code');
+                input.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    input.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // 显示验证结果
+        function showResult(type, title, message) {
+            const result = document.getElementById('result');
+            result.className = 'result ' + type;
+            result.innerHTML = `
+                ${title ? `<h3>${title}</h3>` : ''}
+                ${message}
+            `;
+            result.style.display = 'block';
+        }
+
+        // 验证成功庆祝效果
+        function celebrate() {
+            const container = document.querySelector('.container');
+            container.style.animation = 'celebrate 0.6s ease';
+
+            setTimeout(() => {
+                container.style.animation = '';
+            }, 600);
+        }
+
+        // 清理验证记录（开发调试用，生产环境可移除）
+        function clearVerifiedRecords() {
+            if (confirm('确定要清除所有验证记录吗？此操作不可恢复！')) {
+                verifiedCodes.clear();
+                localStorage.removeItem('bkj_verified_codes');
+                alert('验证记录已清除');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
